@@ -7,10 +7,8 @@ app = Flask(  # Create a flask app
 	static_folder='static'  # Name of directory for static files
 )
 
-
-username = "siwarha"
-password = "123"
-facebook_friends=["Ella","Avinoam","Ido", "Yael", "Nili", "Naomi"]
+users = {"siwarha": "123", "tamar" : "T000", "ella": "Ella123", "avinoam":"Avi456"}
+facebook_friends=["ella","avinoam","ido", "yael", "nili", "naomi", "milky"]
 
 
 @app.route('/', methods=['GET', 'POST'])  # '/' for the default page
@@ -20,13 +18,19 @@ def login():
 
 	else:
 
-		username2 = request.form['username']
+		username2 = request.form['username'].lower()
 		password2 = request.form['password']
 
-		if username2==username and password2==password:
-			return redirect(url_for('home'))
-		else: 
+		if username2 in users:
+			if users[username2] == password2:
+				return redirect(url_for('home'))
+		
+			else: 
+				return render_template('login.html')
+				
+		else:
 			return render_template('login.html')
+			
 
 @app.route('/home')  # '/' for the default page
 def home():
@@ -35,7 +39,7 @@ def home():
        
 @app.route('/friend_exists/<string:name>')  # '/' for the default page
 def friend_exists(name):
-	if name in facebook_friends:
+	if name.lower() in facebook_friends:
 		return render_template('friend_exists.html', result = "True")
 	else:
 		return render_template('friend_exists.html', result = "False")
